@@ -34,7 +34,7 @@ If you want select auto-formatting, you can add rules for specific folders to en
 ## Installation
 
 1. Copy the plugin folder to your vault's `.obsidian/plugins/` directory
-2. Ensure the `md-tight-lists.sh` script has executable permissions
+2. Ensure the `md-space-control.sh` script has executable permissions
 3. Enable the plugin in Obsidian's Community Plugins settings
 
 ## Requirements

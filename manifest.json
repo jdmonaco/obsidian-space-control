@@ -1,9 +1,9 @@
 {
-	"id": "tightlists-formatter",
+	"id": "space-control",
 	"name": "Space Control",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"minAppVersion": "1.9.0",
-	"description": "Format Markdown lists to be tight (no empty lines between items) with optional mdformat integration",
+	"description": "Plugin to autoformat notes using mdformat, make lists tight, and apply EditorConfig indentation settings.",
 	"author": "Joseph Monaco",
 	"authorUrl": "https://github.com/jdmonaco/obsidian-space-control",
 	"fundingUrl": "",

@@ -24,7 +24,7 @@ elif [ -d "$SCRIPT_DIR/../dev-vault" ]; then
 else
     DEV_VAULT="$SCRIPT_DIR/dev-vault"  # Default to current directory
 fi
-PLUGIN_ID="tightlists-formatter"
+PLUGIN_ID="space-control"
 PLUGIN_DIR="$DEV_VAULT/.obsidian/plugins/$PLUGIN_ID"
 
 echo "🔧 Installing Space Control formatter plugin for development..."
