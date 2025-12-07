@@ -1,6 +1,6 @@
-# Tight Lists Formatter for Obsidian
+# Space Control for Obsidian
 
-This Obsidian plugin formats Markdown lists to be "tight" (no empty lines between list items) and optionally applies comprehensive CommonMark formatting to your notes using [mdformat](https://mdformat.readthedocs.io/en/stable/users/installation_and_usage.html), which should be installed with the [mdformat-tight-lists](https://github.com/jdmonaco/mdformat-tight-lists) plugin.
+This Obsidian plugin formats Markdown lists to be "tight" (no empty lines between list items) and optionally applies comprehensive CommonMark formatting to your notes using [mdformat](https://mdformat.readthedocs.io/en/stable/users/installation_and_usage.html), which should be installed with the [mdformat-space-control](https://github.com/jdmonaco/mdformat-space-control) plugin.
 
 ## Features
 
@@ -41,7 +41,7 @@ If you want select auto-formatting, you can add rules for specific folders to en
 
 - Obsidian desktop app (this plugin uses shell scripts and is desktop-only)
 - Bash shell available on your system
-- Optional: install [mdformat](https://mdformat.readthedocs.io/en/stable/users/installation_and_usage.html) &mdash; and the [mdformat-tight-lists](https://github.com/jdmonaco/mdformat-tight-lists) &mdash; for comprehensive Markdown formatting based on the [CommonMark spec](https://spec.commonmark.org/0.31.2/#introduction).
+- Optional: install [mdformat](https://mdformat.readthedocs.io/en/stable/users/installation_and_usage.html) &mdash; and the [mdformat-space-control](https://github.com/jdmonaco/mdformat-space-control) &mdash; for comprehensive Markdown formatting based on the [CommonMark spec](https://spec.commonmark.org/0.31.2/#introduction).
 
 ### Installing mdformat (Optional)
 
@@ -53,7 +53,7 @@ pip install pipx
 
 # Install mdformat with minimal recommended plugins
 pipx install mdformat
-pipx inject mdformat mdformat-frontmatter mdformat-tight-lists
+pipx inject mdformat mdformat-frontmatter mdformat-space-control
 ```
 
 **Why pipx?** pipx installs Python packages in isolated environments, preventing dependency conflicts while making the commands globally available.
@@ -61,14 +61,14 @@ pipx inject mdformat mdformat-frontmatter mdformat-tight-lists
 **Minimal recommended setup:**
 
 - **mdformat-frontmatter**: Preserves YAML frontmatter (essential for Obsidian)
-- **mdformat-tight-lists**: Automatic tight list formatting (aggressively removes empty lines between list items)
+- **mdformat-space-control**: Automatic tight list formatting (aggressively removes empty lines between list items)
 
 **Optional mdformat plugins (see [full list](https://mdformat.readthedocs.io/en/stable/users/plugins.html)):**
 
 - **mdformat-gfm**: Support GitHub-Flavored Markdown (GFM) extensions (note: may conflict with tight-list processing)
 - **[mdformat-simple-breaks](https://github.com/csala/mdformat-simple-breaks)**: Correct mdformat's flavor of thematic breaks
 
-**Note**: The mdformat-tight-lists plugin is opinionated and converts loose lists to tight lists. This yields a semantic change: more lists will contain only bare list items that are *not* encapsulated in `<p>` tags. This is intentional &mdash; as a result the Obsidian Tight Lists Formatter plugin calls `mdformat` (when enabled) with its `--no-validate` option to prevent validation errors.
+**Note**: The mdformat-space-control plugin is opinionated and converts loose lists to tight lists. This yields a semantic change: more lists will contain only bare list items that are *not* encapsulated in `<p>` tags. This is intentional &mdash; as a result the Obsidian Space Control plugin calls `mdformat` (when enabled) with its `--no-validate` option to prevent validation errors.
 
 ## Usage
 

@@ -1,5 +1,5 @@
 {
-	"name": "obsidian-tightlists-formatter",
+	"name": "obsidian-space-control",
 	"version": "1.0.0",
 	"description": "Format Markdown lists to be tight (no empty lines between items) in Obsidian",
 	"main": "main.js",

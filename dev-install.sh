@@ -27,7 +27,7 @@ fi
 PLUGIN_ID="tightlists-formatter"
 PLUGIN_DIR="$DEV_VAULT/.obsidian/plugins/$PLUGIN_ID"
 
-echo "🔧 Installing Tight Lists Formatter plugin for development..."
+echo "🔧 Installing Space Control formatter plugin for development..."
 
 # Check if dev-vault exists
 if [ ! -d "$DEV_VAULT" ]; then
@@ -131,7 +131,7 @@ if [ $FAILED -eq 0 ]; then
     echo ""
     echo "To start development:"
     echo "  1. Run 'npm run dev' in another terminal for auto-rebuild"
-    echo "  2. Enable 'Tight Lists Formatter' in Obsidian settings"
+    echo "  2. Enable 'Space Control' in Obsidian settings"
     echo "  3. Hot Reload plugin will auto-reload on changes"
 else
     echo -e "\n${RED}⚠️  Installation completed with errors.${NC}"

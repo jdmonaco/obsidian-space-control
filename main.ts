@@ -99,7 +99,7 @@ export default class TightListsFormatterPlugin extends Plugin {
                     menu.addSeparator();
                     menu.addItem((item) => {
                         item
-                            .setTitle('Format Tight Lists')
+                            .setTitle('Space Control')
                             .setIcon('list')
                             .onClick(() => {
                                 this.formatSelection(editor);
@@ -666,7 +666,7 @@ class TightListsSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        containerEl.createEl('h1', { text: 'Tight Lists Formatter Settings' });
+        containerEl.createEl('h1', { text: 'Space Control Settings' });
 
         // mdformat toggle section
         containerEl.createEl('h2', { text: 'Global Formatter Options' });
