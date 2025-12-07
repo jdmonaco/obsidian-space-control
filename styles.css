@@ -1,20 +1,20 @@
 /* Tight Lists Formatter Status Bar Styles */
 
-.tight-lists-status {
+.space-control-status {
     padding: 0 5px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
 }
 
-.tight-lists-status-disabled {
+.space-control-status-disabled {
     opacity: 0.5;
 }
 
-.tight-lists-status-global {
+.space-control-status-global {
     color: var(--text-accent);
 }
 
-.tight-lists-status-folder {
+.space-control-status-folder {
     color: var(--text-accent-hover);
 }

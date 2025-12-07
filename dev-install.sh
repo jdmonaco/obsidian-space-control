@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 # Script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
-SHNAME="md-tight-lists.sh"
+SHNAME="md-space-control.sh"
 
 # Check if dev-vault is in current directory or parent directory
 if [ -d "$SCRIPT_DIR/dev-vault" ]; then

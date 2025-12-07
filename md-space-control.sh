@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Script: md-tight-lists.sh
+# Script: md-space-control.sh
 # Purpose: Reformat Markdown files to have tight lists (no empty lines between items)
-# Usage: md-tight-lists.sh [OPTIONS] [file1.md file2.md ...]
-#        cat file.md | md-tight-lists.sh [OPTIONS]
+# Usage: md-space-control.sh [OPTIONS] [file1.md file2.md ...]
+#        cat file.md | md-space-control.sh [OPTIONS]
 
 # Function to show usage
 show_usage() {

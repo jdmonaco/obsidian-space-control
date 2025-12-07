@@ -33,7 +33,7 @@ export default class TightListsFormatterPlugin extends Plugin {
     private scriptPath: string;
     public mdformatAvailable: boolean = false;
     public mdformatPath: string | null = null;
-    public mdformatTightListsAvailable: boolean = false;
+    public mdformatSpaceControlAvailable: boolean = false;
     private currentlyFormatting: Set<string> = new Set();
     private statusBarItem: HTMLElement;
     private lastActiveFile: TFile | null = null;
@@ -45,7 +45,7 @@ export default class TightListsFormatterPlugin extends Plugin {
         // Simple path resolution - the script is in the same directory as the plugin
         const adapter = this.app.vault.adapter as any;
         const pluginDir = path.join(adapter.basePath, '.obsidian', 'plugins', this.manifest.id);
-        this.scriptPath = path.join(pluginDir, 'md-tight-lists.sh');
+        this.scriptPath = path.join(pluginDir, 'md-space-control.sh');
         
         // Check for mdformat availability
         await this.checkMdformatAvailability();
@@ -214,7 +214,7 @@ export default class TightListsFormatterPlugin extends Plugin {
                     if (stats.isFile() && (stats.mode & 0o111)) {
                         this.mdformatAvailable = true;
                         this.mdformatPath = mdformatPath;
-                        // Check for tight-lists plugin
+                        // Check for space-control plugin
                         await this.checkMdformatTightLists();
                         return;
                     }
@@ -226,14 +226,14 @@ export default class TightListsFormatterPlugin extends Plugin {
 
         this.mdformatAvailable = false;
         this.mdformatPath = null;
-        this.mdformatTightListsAvailable = false;
+        this.mdformatSpaceControlAvailable = false;
     }
 
     private async checkMdformatTightLists(): Promise<void> {
         if (!this.mdformatPath) return;
         
         try {
-            // Run mdformat --help to check for tight-lists plugin
+            // Run mdformat --help to check for space-control plugin
             const result = await new Promise<string>((resolve, reject) => {
                 const child = spawn(this.mdformatPath!, ['--help'], {
                     stdio: ['pipe', 'pipe', 'pipe']
@@ -253,10 +253,10 @@ export default class TightListsFormatterPlugin extends Plugin {
                 });
             });
             
-            // Check if tight-lists extension is mentioned in help output
-            this.mdformatTightListsAvailable = result.includes('tight_lists');
+            // Check if space-control extension is mentioned in help output
+            this.mdformatSpaceControlAvailable = result.includes('space_control');
         } catch (error) {
-            this.mdformatTightListsAvailable = false;
+            this.mdformatSpaceControlAvailable = false;
         }
     }
 
@@ -438,7 +438,7 @@ export default class TightListsFormatterPlugin extends Plugin {
             return this.runMdformat(content);
         }
         
-        // Otherwise, use the included tight-lists script
+        // Otherwise, use the included space-control script
         return this.runTightListsScript(content);
     }
 
@@ -500,7 +500,7 @@ export default class TightListsFormatterPlugin extends Plugin {
 
             child.on('error', (error: any) => {
                 if (error.code === 'ENOENT') {
-                    reject(new Error('Formatter script not found. Please ensure md-tight-lists.sh is in the plugin directory.'));
+                    reject(new Error('Formatter script not found. Please ensure md-space-control.sh is in the plugin directory.'));
                 } else if (error.code === 'EACCES') {
                     reject(new Error('Formatter script is not executable. Please check file permissions.'));
                 } else {
@@ -580,23 +580,23 @@ export default class TightListsFormatterPlugin extends Plugin {
         if (!isAutoFormatEnabled) {
             // Auto-format is disabled
             statusText = '◎ manual';
-            statusClass = 'tight-lists-status-disabled';
+            statusClass = 'space-control-status-disabled';
         } else {
             // Check if it's folder-based or global
             const isFolderBased = this.isFolderBasedAutoFormat(file);
             if (isFolderBased) {
                 statusText = '⦿ dirfmt';
-                statusClass = 'tight-lists-status-folder';
+                statusClass = 'space-control-status-folder';
             } else {
                 statusText = '◉ autofmt';
-                statusClass = 'tight-lists-status-global';
+                statusClass = 'space-control-status-global';
             }
         }
         
         // Create status bar element
         const statusEl = this.statusBarItem.createEl('span', {
             text: statusText,
-            cls: `tight-lists-status ${statusClass}`
+            cls: `space-control-status ${statusClass}`
         });
         
         // Add hover text
@@ -700,16 +700,16 @@ class TightListsSettingTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }));
 
-            if (this.plugin.mdformatTightListsAvailable) {
-                mdformatSetting.setDesc('✅ mdformat with tight-lists plugin available. When enabled, applies comprehensive CommonMark-based rules with tight-lists formatting.');
+            if (this.plugin.mdformatSpaceControlAvailable) {
+                mdformatSetting.setDesc('✅ mdformat with space-control plugin available. When enabled, applies comprehensive CommonMark-based rules with space-control formatting.');
             } else {
-                mdformatSetting.setDesc('⚠️ mdformat available but tight-lists plugin not found. Install with: pipx inject mdformat mdformat-tight-lists');
+                mdformatSetting.setDesc('⚠️ mdformat available but space-control plugin not found. Install with: pipx inject mdformat mdformat-space-control');
             }
         } else {
             // Show installation instructions when mdformat is not available
             new Setting(containerEl)
                 .setName('Enhanced formatting')
-                .setDesc('Install mdformat for enhanced formatting:\n\npipx install mdformat\npipx inject mdformat mdformat-frontmatter mdformat-tight-lists');
+                .setDesc('Install mdformat for enhanced formatting:\n\npipx install mdformat\npipx inject mdformat mdformat-frontmatter mdformat-space-control');
         }
 
         // Auto-format settings section
