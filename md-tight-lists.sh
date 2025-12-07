@@ -43,6 +43,8 @@ process_markdown() {
         prev_marker = ""
         prev_indent = -1
         prev_list_class = ""
+        current_output_marker = "-"  # Track what we are outputting: dash or asterisk
+        last_top_level_marker = ""  # Track the last top-level marker we saw
     }
     
     # Handle frontmatter
@@ -65,7 +67,7 @@ process_markdown() {
     }
     
     # Regular processing after frontmatter
-    /^[[:space:]]*[-*+][[:space:]]/ || /^[[:space:]]*[0-9]+\.[[:space:]]/ {
+    /^[[:space:]]*[-*+][[:space:]]/ || /^[[:space:]]*[-*+][[:space:]]*$/ || /^[[:space:]]*[0-9]+\.[[:space:]]/ {
         # This is a list item
         
         # Extract indentation level
@@ -76,7 +78,7 @@ process_markdown() {
         if (match($0, /^[[:space:]]*[0-9]+\.[[:space:]]/)) {
             marker = "ordered"
             list_class = "ordered"
-        } else if (match($0, /^[[:space:]]*[-*+][[:space:]]/)) {
+        } else if (match($0, /^[[:space:]]*[-*+][[:space:]]/) || match($0, /^[[:space:]]*[-*+]$/)) {
             # Extract the specific marker character
             match($0, /^[[:space:]]*/)
             prefix_len = RLENGTH
@@ -90,41 +92,84 @@ process_markdown() {
         if (!in_list && NR > 1 && last_line != "") {
             # Starting a new list after non-list content
             need_separator = 1
-        } else if (in_list) {
-            if (indent == 0 && prev_indent == 0) {
+            current_output_marker = "-"  # Reset to dash for new list
+        } else if (in_list && indent == 0) {
+            if (prev_indent == 0) {
                 # Top-level to top-level - check exact marker
                 if (marker != prev_marker) {
                     need_separator = 1
-                }
-            } else if (indent > 0 && prev_indent > 0) {
-                # Nested to nested - check ordered vs unordered
-                if (list_class != prev_list_class && prev_list_class != "") {
-                    need_separator = 1
-                }
-            } else if (indent != prev_indent) {
-                # Changing indentation levels
-                if (indent > prev_indent) {
-                    # Going deeper - check if changing list type
-                    if (list_class != prev_list_class) {
-                        need_separator = 1
+                    # Alternate the output marker
+                    if (current_output_marker == "-") {
+                        current_output_marker = "*"
+                    } else {
+                        current_output_marker = "-"
                     }
-                } else if (indent < prev_indent) {
-                    # Coming back up - check if we were in a different list type
-                    if (list_class != prev_list_class) {
-                        need_separator = 1
+                }
+            } else {
+                # Coming from nested to top-level
+                # We need to track the last top-level marker
+                if (marker != last_top_level_marker && last_top_level_marker != "") {
+                    need_separator = 1
+                    # Also need to alternate the output marker
+                    if (current_output_marker == "-") {
+                        current_output_marker = "*"
+                    } else {
+                        current_output_marker = "-"
                     }
                 }
             }
         }
+        # That is it - no other cases need separators
+        # All nested lists should be tight
         
         if (need_separator) {
             print ""
+        }
+        
+        
+        # Handle marker normalization for unordered lists
+        if (list_class == "unordered") {
+            spaces = ""
+            for (i = 0; i < indent; i++) spaces = spaces " "
+            
+            # Check if this is an empty list item
+            if (match($0, /^[[:space:]]*[-*+]$/)) {
+                # Replace the whole line with just the marker (no trailing space)
+                if (indent > 0) {
+                    $0 = spaces "-"
+                } else {
+                    $0 = spaces current_output_marker
+                }
+            } else {
+                # Regular list item with content
+                if (indent > 0) {
+                    # Nested items always use dash
+                    sub(/^[[:space:]]*[-*+]/, spaces "-")
+                } else {
+                    # Top-level: use current_output_marker
+                    sub(/^[[:space:]]*[-*+]/, spaces current_output_marker)
+                }
+            }
+        }
+        
+        # Update tracking variables
+        if (indent == 0) {
+            last_top_level_marker = marker
         }
         
         in_list = 1
         prev_marker = marker
         prev_indent = indent
         prev_list_class = list_class
+        
+        # Handle trailing whitespace
+        if (match($0, /  $/)) {
+            # Two spaces at end = line break, convert to backslash
+            sub(/  $/, "\\")
+        } else {
+            # Remove other trailing whitespace
+            sub(/[[:space:]]+$/, "")
+        }
         print
         next
     }
@@ -135,12 +180,20 @@ process_markdown() {
             in_list = 0
             prev_marker = ""
             prev_list_class = ""
+            last_top_level_marker = ""
+            current_output_marker = "-"  # Reset to dash for next list
         }
         if ($0 != "" || !in_list) {
+            # Handle trailing whitespace
+            if (match($0, /  $/)) {
+                # Two spaces at end = line break, convert to backslash
+                sub(/  $/, "\\")
+            } else {
+                # Remove other trailing whitespace
+                sub(/[[:space:]]+$/, "")
+            }
             print
         }
-    }
-    {
         last_line = $0
     }
     '
