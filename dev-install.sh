@@ -13,8 +13,15 @@ NC='\033[0m' # No Color
 
 # Script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-REPO_DIR="$(dirname "$SCRIPT_DIR")"
 SHNAME="md-space-control.sh"
+if [ -f "$(dirname "$SCRIPT_DIR")/$SHNAME" ]; then
+	SH_DIR="$(dirname "$SCRIPT_DIR")"
+elif [ -f "$SCRIPT_DIR/$SHNAME" ]; then
+	SH_DIR="$SCRIPT_DIR"
+else
+	echo -e "${RED}✗${NC} Error: Missing script ($SHNAME)"
+	exit 1
+fi
 
 # Check if dev-vault is in current directory or parent directory
 if [ -d "$SCRIPT_DIR/dev-vault" ]; then
@@ -28,13 +35,6 @@ PLUGIN_ID="space-control"
 PLUGIN_DIR="$DEV_VAULT/.obsidian/plugins/$PLUGIN_ID"
 
 echo "🔧 Installing Space Control formatter plugin for development..."
-
-# Check if dev-vault exists
-if [ ! -d "$DEV_VAULT" ]; then
-    echo -e "${RED}❌ Error: dev-vault not found at $DEV_VAULT${NC}"
-    echo "Please create a dev-vault in the current directory first."
-    exit 1
-fi
 
 # Create plugin directory if it doesn't exist
 if [ ! -d "$PLUGIN_DIR" ]; then
@@ -62,12 +62,12 @@ ensure_hardlink() {
         rm -f "$tgt"  # Remove if it exists
         ln "$src" "$tgt" 2>/dev/null
 	if [[ -f "$tgt" ]]; then
-	    echo -e "${GREEN}✓${NC} Linked: ${src#$REPO_DIR/} -> ${tgt#$REPO_DIR/}"
+	    echo -e "${GREEN}✓${NC} Linked: ${src#$SH_DIR/} -> ${tgt#$SH_DIR/}"
 	else
-	    echo -e "${RED}✗${NC} Error: Failed to link ${tgt#$REPO_DIR/}"
+	    echo -e "${RED}✗${NC} Error: Failed to link ${tgt#$SH_DIR/}"
 	fi
     else
-        echo -e "${GREEN}✓${NC} Already Linked: ${tgt#$REPO_DIR/}"
+        echo -e "${GREEN}✓${NC} Already Linked: ${tgt#$SH_DIR/}"
     fi
 }
 
@@ -92,7 +92,7 @@ FILES_TO_LINK=(
 FAILED=0
 
 # First: Link shell script from parent repo directory
-if ! ensure_hardlink "$REPO_DIR/$SHNAME" "$SCRIPT_DIR/$SHNAME"; then
+if ! ensure_hardlink "$SH_DIR/$SHNAME" "$SCRIPT_DIR/$SHNAME"; then
     FAILED=1
 fi
 
@@ -100,7 +100,7 @@ fi
 if [ -f "$SCRIPT_DIR/$SHNAME" ]; then
     if [ ! -x "$SCRIPT_DIR/$SHNAME" ]; then
         chmod +x "$SCRIPT_DIR/$SHNAME"
-        echo -e "${GREEN}✓${NC} Made executable: ${SCRIPT_DIR#$REPO_DIR/}/$SHNAME"
+        echo -e "${GREEN}✓${NC} Made executable: ${SCRIPT_DIR#$SH_DIR/}/$SHNAME"
     fi
 fi
 
@@ -115,7 +115,7 @@ done
 if [ -f "$PLUGIN_DIR/$SHNAME" ]; then
     if [ ! -x "$PLUGIN_DIR/$SHANME" ]; then
         chmod +x "$PLUGIN_DIR/$SHNAME"
-        echo -e "${GREEN}✓${NC} Made executable: ${PLUGIN_DIR#$REPO_DIR/}/$SHNAME"
+        echo -e "${GREEN}✓${NC} Made executable: ${PLUGIN_DIR#$SH_DIR/}/$SHNAME"
     fi
 fi
 
